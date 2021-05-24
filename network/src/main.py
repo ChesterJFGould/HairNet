@@ -209,7 +209,7 @@ def demo():
     with tf.Session(config=config) as sess:
         model = create_model(sess)
         print('start testing')
-        pos, curv, _, _, _ = model.step(sess, test_data, cheat_y, False)
+        pos, curv, _, = model.step(sess, test_data, cheat_y, False)
     # pos = reconstruction(pos, curv)
     visualize_real(args.data_dir, test_data, pos)
 

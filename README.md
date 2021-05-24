@@ -1,3 +1,7 @@
+# Changes
++ `--mode demo` now saves the generated `obj` file to `test.obj` in the working
+  directory. This should become a separate mode.
+
 # HairNet
 Reimplement of [HairNet](https://arxiv.org/abs/1806.07467) (a simple vision)
 
