@@ -1,4 +1,6 @@
 # Changes
++ `--mode gen --input <input_file> --output <output_file>` generates a 3d hair
+  model into `<output_file>` based on `<input_file>`.
 + `--mode demo` now saves the generated `obj` file to `test.obj` in the working
   directory. This should become a separate mode.
 

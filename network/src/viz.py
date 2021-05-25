@@ -1,4 +1,5 @@
 # Author: Shiyang Jia
+# Co-Author: Chester JF Gould
 
 import numpy as np
 import matplotlib as matplotlib
@@ -109,7 +110,7 @@ def saveObjHairFile(fileName, strands, mask):
 
     vertices = []
 
-    scaledY = [0, 0.001, 0]
+    scaledY = [0, 0.02, 0]
 
     hairWidth = 0.002
 

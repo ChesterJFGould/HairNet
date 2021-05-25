@@ -1,6 +1,7 @@
 # Author: Shiyang Jia
 
 import os
+import cv2
 import time
 import argparse
 import random
@@ -8,9 +9,9 @@ import numpy as np
 import tensorflow as tf
 from six.moves import xrange
 
-from dataloader import Dataloader, load_real_image, get_mean_std
+from dataloader import Dataloader, load_real_image, get_mean_std, load_root
 from model import HairModel
-from viz import visualize, visualize_real
+from viz import visualize, visualize_real, saveObjHairFile
 
 parser = argparse.ArgumentParser(description='My HairNet =w=')
 
@@ -21,6 +22,8 @@ parser.add_argument('--batch_size',    type=int,   default=16)
 parser.add_argument('--learning_rate', type=float, default=1e-4)
 parser.add_argument('--output_dir',    type=str,   default='../experiments')
 parser.add_argument('--load_model',    action='store_true')
+parser.add_argument('--input',         type=str)
+parser.add_argument('--output',        type=str)
 
 args = parser.parse_args()
 
@@ -213,6 +216,24 @@ def demo():
     # pos = reconstruction(pos, curv)
     visualize_real(args.data_dir, test_data, pos)
 
+def gen(inFile, outFile):
+    img_data = cv2.imread(inFile).astype(np.float64) / 255
+    img_data = img_data[:, :, (2, 0)]
+    cheat_y = np.zeros((1, 32, 32, 500))
+
+    config = tf.ConfigProto(device_count={'GPU': 1}, allow_soft_placement=True)
+    with tf.Session(config=config) as sess:
+	    model = create_model(sess)
+	    pos, curv, _, = model.step(sess, img_data, cheat_y, False)
+
+    pos_mean, pos_std, _, _ = get_mean_std(args.data_dir)
+    pos = pos * pos_std + pos_mean
+
+    root, mask = load_root(args.data_dir)
+    pos += np.tile(root, [1, 1, 100])
+    pos[..., :3] = root
+
+    saveObjHairFile(outFile, pos, mask)
 
 def main():
     if args.mode == 'train':
@@ -221,7 +242,8 @@ def main():
         sample()
     if args.mode == 'demo':
         demo()
-
+    if args.mode == 'gen':
+        gen(args.input, args.output)
 
 if __name__ == '__main__':
     main()
